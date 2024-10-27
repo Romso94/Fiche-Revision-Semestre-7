@@ -8,8 +8,6 @@
 - [[#Security, Functionality and Ease of Use]]
 
 ---
-
-
 ## Definition 
 
  - **Pentesting** for profit = Pentration testing conducted by security team
@@ -119,7 +117,6 @@ Types of attacks :
 > [Google hacking database](https://www.exploit-db.com/google-hacking-database) 
 
 ![[Pasted image 20241026174326.png]]
-
 ## 2. Scanning and Enumeration 
 
 #### 1/ Port Scanning 
