@@ -208,3 +208,152 @@ Droits d'accès a ces zones doivent être filtrés et autoriser que les flux né
 1. 2 réseaux distinct non connecté : Très efficace mais pas pratique en entreprise
 2. VLAN : réseaux virtuels implémentés par les switch et gère la communication entre les réseaux selon des règles configurés (peut se faire grâces aux port Ethernet des switch mais aussi des adresses mac des systems)
 
+
+
+
+## Sécurité des réseaux wifi
+
+-> standard 802.11
+
+Sans fil pour faciliter connexion des users itinérants
+Locaux trop couteux a cabler
+Connexion Provisoire
+
+
+-> Scan passif : trame Beacon
+-> Scan actif : trame probe requets pour trouver le SSID
+
+
+
+Attaques sur le Wifi : 
+-> Attaque DOS ( envoie de ==paquets désassociation== ou envoie de paquet ==CTS== et faire passer pour AP ( probleme du terminal caché))
+
+Standard 802.11 pas de solution contre le DOS
+
+
+Solutions : 
+ Limiter les débordements ( PLanification radio)
+ Eviter les AP
+Masquer le SSID
+Filtrage MAC
+
+Mais tout ca pas ouf alors 
+
+Basic Service Set BSS : doit passer par un switch avec un BSSID
+
+![[Pasted image 20241028212521.png]]
+
+Distribution system -> passe par un vlan pour internet 
+![[Pasted image 20241028212548.png]]
+
+Extended Service Set - combinaison des 2 
+
+![[Pasted image 20241028212613.png]]
+
+### WEP  - Wire Equivalent Policy
+
+Fonctionalités :
+- Pas de gestions de clés 
+- PAs de protection contre attaque de rejeu
+- ==Confidentialité== RC4
+- ==Intégrité== CRC-32
+- ==Authentication== shared key
+
+![[Pasted image 20241028210723.png]]
+
+WEP RC4  : Concu par Ron Rivest en 1987
+Bytes-oriented 
+Partage 1 secret nécessaire 
+Algo Simple efficace et élégant
+
+![[Pasted image 20241028210817.png]]
+
+
+Danger : IV et K identique alors meme keystream
+Problem dans WEP -> IV sont fréquemment répétés
+
+
+IV compteur qui commence souvent a 0
+-> redémarrage provoque reutilisation d'IV
+
+
+### Intégrité WEP : CRC (Cyclic Redundance Check)
+
+-> CRC ne fournit pas de vérification de l'intégrité cryptographiqque
+
+Concu pour detecter les erreurs aléatoires
+
+CRC est une fonction linéaire donc peut modifier la tram
+
+
+--- 
+
+## Réseau a acces controlés 
+
+
+-> Restrictions supplémentaire limiter les acces au stric nécessaire(def en prof et moindre priv)
+
+Serveur AAA - Authentication, Authorization, Accounting
+
+requiert l'utilisation d'une infrastructure 802.1X
+
+![[Pasted image 20241028211249.png]]
+
+-Serveur : Centralise Autentification autorisation et journalisation
+Doit etre joignable a tout moment 
+Protocol RADIUS ou diameter (exemple freeRADIUS)
+
+
+- Réseau de confiance et clients : 
+Transportee info d'authentification et autorisation des equipement finaux et les journalisations
+
+-Etat autorisé ou non autorisé alors seul trafic EAPoL et client rupture protocolaire
+
+- Supplicant : Cherche a se connecter au reseau a AC -> autorisé ou non apres tentative (supplicant,client,serveur)
+![[Pasted image 20241028211539.png]]
+
+## EAP/PEAP
+
+PEAP : Tunnel TLS avec certficat du serveur RADIUS - protocol d'auth protégé et encapsulé dans EAP
+
+Tunneled TLS different de PEAP car transporte les couples Attributs / Valeurs ( AVP )
+
+![[Pasted image 20241028211643.png]]
+
+![[Pasted image 20241028211648.png]]
+
+---
+## WPA - Wifi Protected Access
+
+-> Objectif remplacer WEP
+
+Patch urgent de 802.11
+Standard appelé WPA2 et concu pour que les anciens appareils compatible WIFI en mesure d'utiliser WPA
+
+- Compteur pour empecher le rejeu
+- Taille de 48-bit
+- User Authentication
+- Cles actualisé dynamiquement TKIP
+- AES utilisé au lieu de RC4
+
+WPA personnel -> Clé partagées PSK
+pass-phrase hash avec le SSID
+
+WPA Entreprise -> serveur d'auth ( RADIUS exemple)
+
+
+WPA2 -> 4 way handshake
+Confirmer PMK (client)
+Deriver nouvelle PTK
+Instller clés 
+Chiffrer le Transport GTK
+Confirmer le chiffrement choisie
+
+4 messages EaPol
+
+![[Pasted image 20241028212403.png]]
+
+
+PEAP demande au serveur de fournir un certificat et restreint le type d'auth pour le tunnel souvent axé pour des réseaux microsoft 
+
+TTLS plus libre pour l'auth adapté aux environnements hétérogènes
